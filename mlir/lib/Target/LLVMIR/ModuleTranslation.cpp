@@ -1101,7 +1101,11 @@ SmallVector<llvm::Value *> ModuleTranslation::lookupValues(ValueRange values) {
 
 const llvm::DILocation *
 ModuleTranslation::translateLoc(Location loc, llvm::DILocalScope *scope) {
-    return debugTranslation->translateLoc(loc, scope);
+    if(debuggingLevel!=detail::DebuggingLevel::OFF){
+      return debugTranslation->translateLoc(loc, scope);
+    }else{
+      return nullptr;
+    }
 }
 
 llvm::NamedMDNode *
