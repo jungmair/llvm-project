@@ -901,7 +901,7 @@ LogicalResult ModuleTranslation::convertFunctionSignatures() {
               argIdx, LLVMDialect::getNoAliasAttrName())) {
         // NB: Attribute already verified to be boolean, so check if we can indeed
         // attach the attribute to this argument, based on its type.
-        auto argTy = function.getType().getParamType(argIdx);
+        auto argTy = function.getFunctionType().getParamType(argIdx);
         if (!argTy.isa<LLVM::LLVMPointerType>())
           return function.emitError(
               "llvm.noalias attribute attached to LLVM non-pointer argument");
@@ -912,7 +912,7 @@ LogicalResult ModuleTranslation::convertFunctionSignatures() {
               argIdx, LLVMDialect::getAlignAttrName())) {
         // NB: Attribute already verified to be int, so check if we can indeed
         // attach the attribute to this argument, based on its type.
-        auto argTy = function.getType().getParamType(argIdx);
+        auto argTy = function.getFunctionType().getParamType(argIdx);
         if (!argTy.isa<LLVM::LLVMPointerType>())
           return function.emitError(
               "llvm.align attribute attached to LLVM non-pointer argument");
@@ -921,7 +921,7 @@ LogicalResult ModuleTranslation::convertFunctionSignatures() {
       }
 
       if (auto attr = function.getArgAttrOfType<UnitAttr>(argIdx, "llvm.sret")) {
-        auto argTy = function.getType().getParamType(argIdx).dyn_cast<LLVM::LLVMPointerType>();
+        auto argTy = function.getFunctionType().getParamType(argIdx).dyn_cast<LLVM::LLVMPointerType>();
         if (!argTy)
           return function.emitError(
               "llvm.sret attribute attached to LLVM non-pointer argument");
@@ -931,7 +931,7 @@ LogicalResult ModuleTranslation::convertFunctionSignatures() {
       }
 
       if (auto attr = function.getArgAttrOfType<UnitAttr>(argIdx, "llvm.byval")) {
-        auto argTy = function.getType().getParamType(argIdx).dyn_cast<LLVM::LLVMPointerType>();
+        auto argTy = function.getFunctionType().getParamType(argIdx).dyn_cast<LLVM::LLVMPointerType>();
         if (!argTy)
           return function.emitError(
               "llvm.byval attribute attached to LLVM non-pointer argument");
@@ -939,9 +939,9 @@ LogicalResult ModuleTranslation::convertFunctionSignatures() {
                              .addByValAttr(convertType(argTy.getElementType())));
       }
       if (auto attr = function.getArgAttrOfType<UnitAttr>(argIdx, "llvm.nest")) {
-        auto argTy = function.getType().getParamType(argIdx).dyn_cast<LLVM::LLVMPointerType>();
+        auto argTy = function.getFunctionType().getParamType(argIdx).dyn_cast<LLVM::LLVMPointerType>();
         if (!argTy.isa<LLVM::LLVMPointerType>())
-          return func.emitError(
+          return function.emitError(
               "llvm.nest attribute attached to LLVM non-pointer argument");
         llvmArg.addAttrs(llvm::AttrBuilder(llvmArg.getContext())
                              .addAttribute(llvm::Attribute::Nest));

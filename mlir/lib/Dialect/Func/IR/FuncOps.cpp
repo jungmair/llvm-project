@@ -165,7 +165,7 @@ void CallOp::getEffects(
     auto callable=interface.resolveCallable();
     bool isConstFn=false;
     if(callable){
-      if(auto funcOp=mlir::dyn_cast_or_null<mlir::FuncOp>(callable)){
+      if(auto funcOp=mlir::dyn_cast_or_null<mlir::func::FuncOp>(callable)){
         isConstFn=funcOp->hasAttr("const");
       }
     }
