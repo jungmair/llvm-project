@@ -40,12 +40,13 @@ mlir::ArrayAttr getResultNames(mlir::MLIRContext* context,const std::string& lin
   }else{
     size_t first=0;
     size_t last=0;
+    size_t counter=0;
     while(first!=llvm::StringRef::npos){
       last=resultArea.find(",",first);
       auto effectiveLen=std::min(resultArea.size(),last)-1;
       std::string name=resultArea.substr(first,effectiveLen).str();
       attrs.push_back(mlir::StringAttr::get(context,name));    
-      first=last;
+      first=last==llvm::StringRef::npos?last:last+1;
     }
   }
   return ArrayAttr::get(context,attrs);
